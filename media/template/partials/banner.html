@@ -1,0 +1,57 @@
+<div id="banner" class="carousel slide mb-3" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#banner" data-bs-slide-to="0" class="active" aria-current="true" aria-label="{{ ad1.post.title }}"></button>
+        <button type="button" data-bs-target="#banner" data-bs-slide-to="1" aria-label="{{ ad2.post.title }}"></button>
+        <button type="button" data-bs-target="#banner" data-bs-slide-to="2" aria-label="{{ ad3.post.title }}"></button>
+    </div>
+
+    <div class="carousel-inner shadow-sm rounded">
+        <div class="carousel-item active">
+            <div style="height: 400px;">
+                <img src="{{ ad1.post.cover }}" class="d-block w-100" style="object-fit: cover; width: 100%; height: 100%;" alt="{{ ad1.post.title }}">
+            </div>
+            <div class="carousel-caption d-none d-md-block">
+                <h5>{{ ad1.post.title }}</h5>
+
+                {% if ad1.post.short_descripthion != None %}
+                    <p>{{ ad1.post.short_description }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="carousel-item">
+            <div style="height: 400px;">
+                <img src="{{ ad2.post.cover }}" class="d-block w-100" style="object-fit: cover; width: 100%; height: 100%;" alt="{{ ad2.post.title }}">
+            </div>
+            <div class="carousel-caption d-none d-md-block">
+                <h5>{{ ad2.post.title }}</h5>
+
+                {% if ad2.post.short_descripthion != None %}
+                    <p>{{ ad2.post.short_description }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="carousel-item">
+            <div style="height: 400px;">
+                <img src="{{ ad3.post.cover }}" class="d-block w-100" style="object-fit: cover; width: 100%; height: 100%;" alt="{{ ad3.post.title }}">
+            </div>
+            <div class="carousel-caption d-none d-md-block">
+                <h5>{{ ad3.post.title }}</h5>
+
+                {% if ad3.post.short_descripthion != None %}
+                    <p>{{ ad3.post.short_description }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#banner" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#banner" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+</div>

@@ -1,0 +1,100 @@
+{% extends 'main.html' %}
+{% load static %}
+{% load jformat %}
+
+{% block title %}
+    {{ super }} دوستان
+{% endblock %}
+
+{% block sidebar %}
+    <div class="card bg-white text-dark text-center sticky-md-top top-md-undernavbar-pt-3 shadow-sm mb-3 mt-0">
+        <div class="card-body p-3">
+            <a href="{% url 'person:friends_posts' 1 %}"><button type="button" class="btn btn-dark">مشاهده‌ی مطالب دوستان</button></a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <ul class="infinite-container" style="list-style-type: none; padding-right: 0;">
+        {% for friend in friends.object_list %}
+            <li class="infinite-item">
+                <div class="card bg-white text-dark mb-3">
+                    <div class="card-body p-3">
+                        <div class="d-flex bd-highlight">
+                            <div class="pe-3 flex-shrink-1 bd-highlight">
+                                {% if friend.avatar.url != None %}
+                                <img class="rounded-circle" src="{{ friend.avatar.url }}" alt="{{ friend.name }}" style="width: 50px; height: 50px;">
+                                
+                                {% else %}
+                                    <img class="rounded-circle" src="{% static 'img/default_avatar.png' %}" alt="{{ friend.name }}" style="width: 50px; height: 50px;">
+                                {% endif %}
+                            </div>
+                            <div class="w-100 bd-highlight">
+                                {% if friend.name != '' and friend.name != None %}
+                                    <h6>{{ friend.name }}</h6>
+                
+                                {% else %}
+                                    <h6>{{ friend.username }}</h6>
+                                {% endif %}
+                
+                                {% if friend.description != None %}
+                                    <small class="text-muted">
+                                        {{ friend.description }}
+                                    </small>
+                                {% endif %}
+                            </div>
+                            <div class="flex-shrink-1 bd-highlight">
+                                <div class="dropdown d-inline-flex">
+                                    <button class="btn btn-light mt-2 me-2" type="button" id="dropdownMenuButton3"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-h"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm text-center"
+                                        aria-labelledby="dropdownMenuButton3">
+                                        <li><a class="dropdown-item" href="#">...</a></li>
+                                        <li><a class="dropdown-item" href="#">...</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+    
+    {% if friends.has_next %}
+        <a class="infinite-more-link" href="{% url 'person:friends' friends.next_page_number %}"></a>
+
+        <div class="d-flex justify-content-center" style="display:none;">
+            <div class="spinner-border text-dark" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+        </div>
+
+    {% else %}
+        <p class="text-muted" style="text-align: center;"><small>به آخر لیست رسیدید</small></p>
+    {% endif %}
+
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static 'js/infinite.min.js' %}"></script>
+    <script>
+        var infinite = new Waypoint.Infinite({
+            element: $('.infinite-container')[0],
+            offset: 'bottom-in-view',
+
+            onBeforePageLoad: function () {
+                $('.spinner-border').show();
+            },
+            onAfterPageLoad: function () {
+                $('.spinner-border').hide();
+
+                var fanum = document.querySelectorAll('span.fa-num');
+                for (let i = 0; i < fanum.length; i++) {
+                    fanum[i].innerHTML = fanum[i].innerHTML.replace(/0/g, '۰').replace(/1/g, '۱').replace(/2/g, '۲').replace(/3/g, '۳').replace(/4/g, '۴').replace(/5/g, '۵').replace(/6/g, '۶').replace(/7/g, '۷').replace(/8/g, '۸').replace(/9/g, '۹');
+                }
+            }
+        });
+    </script>
+{% endblock %}

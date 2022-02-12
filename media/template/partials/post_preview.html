@@ -1,0 +1,112 @@
+{% load static %}
+{% load jformat %}
+
+<div class="card bg-white text-dark mb-3">
+    <div class="card-header bg-light">
+        <div class="d-flex bd-highlight">
+            <div class="pe-3 flex-shrink-1 bd-highlight">
+                <a class="link-dark text-decoration-none" href="{% url 'person:profile' post.author.username %}">
+                    {% if post.author.avatar.url != None %}
+                        <img class="rounded-circle" src="{{ post.author.avatar.url }}" alt="{{ post.author.name }}" style="width: 50px; height: 50px;">
+                    
+                    {% else %}
+                        <img class="rounded-circle" src="{% static 'img/default_avatar.png' %}" alt="{{ post.author.name }}" style="width: 50px; height: 50px;">
+                    {% endif %}
+                </a>
+            </div>
+            <div class="w-100 bd-highlight">
+                <a class="link-dark text-decoration-none" href="{% url 'person:profile' post.author.username %}">
+                    {% if post.author.name != '' %}
+                        <h6>{{ post.author.name }}</h6>
+
+                    {% else %}
+                        <h6>{{ post.author.username }}</h6>
+                    {% endif %}
+                </a>
+
+                <small class="text-muted">
+                    <i class="far fa-calendar"></i> <span class="fa-num">{{ post.publish_time | jformat:'%Y/%m/%d' }} </span>
+                    <i class="far fa-clock"></i> <span class="fa-num">{{ post.publish_time | jformat:'%H:%M' }}</span>
+                </small>
+            </div>
+            <div class="flex-shrink-1 bd-highlight">
+                <div class="dropdown d-inline-flex">
+                    <button class="btn btn-light mt-2 me-2" type="button" id="dropdownMenuButton3"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm text-center" aria-labelledby="dropdownMenuButton3">
+                        {% if user.is_authenticated and authenticated_user == post.author %}
+                            <li><a class="dropdown-item" href="{% url 'person:post:edit' post.author.username post.slug %}"><i class="fas fa-edit"></i> ویرایش</a></li>
+                        {% endif %}
+                        {% if user.is_authenticated and authenticated_user == post.author %}
+                            <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deletePostModalـ{{ post.id }}"><i class="fas fa-trash"></i> حذف</button></li>
+                        {% endif %}
+                        {% if authenticated_user != post.author %}
+                            <li><a class="dropdown-item" href="{% url 'support' %}"><i class="fas fa-skull"></i> گزارش تخلف</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <a class="link-dark text-decoration-none" href="{% url 'person:post:detail' post.author.username post.slug %}">
+            <h3 class="card-title mb-3">{{ post.title }}</h3>
+        </a>
+
+        <a href="#"><span class="badge bg-secondary mb-3">#...</span></a>
+        <a href="#"><span class="badge bg-secondary mb-3">#...</span></a>
+
+        <a class="link-dark text-decoration-none" href="{% url 'person:post:detail' post.author.username post.slug %}">
+            {% if post.cover != None %}
+                <div class="mb-3" style="height: 200px;">
+                    <img src="{{ post.cover }}" class="rounded" style="object-fit: cover; width: 100%; height: 100%;">
+                </div>
+            {% endif %}
+
+            <p class="card-text">{{ post.short_description }}</p>
+        </a>
+    </div>
+    <div class="card-footer bg-light">
+        {% if user.is_authenticated and post in authenticated_user.liked_posts.all %}
+            <span id="like_{{ post.id }}"><button class="btn btn-outline-danger me-2" type="button" onclick="likePost('{{ post.author.username }}', '{{ post.slug }}', '{{ post.id }}')">
+                <i class="fas fa-heart"></i> <span class="fa-num">{{ post.len_likes }}</span>
+            </button></span>
+        {% elif user.is_authenticated and post not in authenticated_user.liked_posts.all %}
+            <span id="like_{{ post.id }}"><button class="btn btn-light me-2" type="button" onclick="likePost('{{ post.author.username }}', '{{ post.slug }}', '{{ post.id }}')">
+                <i class="far fa-heart"></i> <span class="fa-num">{{ post.len_likes }}</span>
+            </button></span>
+        {% else %}
+            <span id="like_{{ post.id }}"><a href="{% url 'person:post:like' post.author.username post.slug %}"><button class="btn btn-light me-2" type="button">
+                <i class="far fa-heart"></i> <span class="fa-num">{{ post.len_likes }}</span>
+            </button></a></span>
+        {% endif %}
+        <a href="{% url 'person:post:detail' post.author.username post.slug %}#comments"><button class="btn btn-light me-2" type="button">
+            <i class="far fa-comment-alt"></i> <span class="fa-num">{{ post.len_comments }}</span>
+        </button></a>
+        <button class="btn btn-light me-2" type="button">
+            <i class="far fa-eye"></i> <span class="fa-num">{{ post.views }}</span>
+        </button>
+
+        <a href="#" class="btn btn-light float-end">ادامه...</a>
+    </div>
+</div>
+
+<!-- Delete Post Modal -->
+<div class="modal fade" id="deletePostModalـ{{ post.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-white text-dark">
+                <h5 class="modal-title">حذف مطلب</h5>
+            </div>
+            <div class="modal-body bg-white text-dark">
+                <p>با این کار مطلب شما (و تمام نظرهای آن) حذف می‌شود و دیگر قابل بازیابی نیست.</p>
+            </div>
+            <div class="modal-footer bg-white text-dark">
+                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">منصرف شدم</button>
+                <a href="{% url 'person:post:delete' post.author.username post.slug %}"><button class="btn btn-danger" type="button">تأیید و حذف مطلب</button></a>
+            </div>
+        </div>
+    </div>
+</div>

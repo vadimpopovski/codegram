@@ -1,0 +1,103 @@
+{% extends 'main.html' %}
+{% load static %}
+{% load jformat %}
+
+{% block title %}
+    {{ super }} دنبال‌کنندگان {{ person.name }}
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'partials/mini_profile.html' %}
+{% endblock %}
+
+{% block body %}
+    <h2 class="text-center text-dark mt-3 mb-4">دنبال‌کنندگان {{ person.name }}</h2>
+
+    {% if followers_are_available %}
+        <ul class="infinite-container" style="list-style-type: none; padding-right: 0;">
+            {% for follower in followers.object_list %}
+                <li class="infinite-item">
+                    <div class="card bg-white text-dark mb-3">
+                        <div class="card-body p-3">
+                            <div class="d-flex bd-highlight">
+                                <div class="pe-3 flex-shrink-1 bd-highlight">
+                                    {% if follower.avatar.url != None %}
+                                    <img class="rounded-circle" src="{{ follower.avatar.url }}" alt="{{ follower.name }}" style="width: 50px; height: 50px;">
+                                    
+                                    {% else %}
+                                        <img class="rounded-circle" src="{% static 'img/default_avatar.png' %}" alt="{{ follower.name }}" style="width: 50px; height: 50px;">
+                                    {% endif %}
+                                </div>
+                                <div class="w-100 bd-highlight">
+                                    {% if follower.name != '' and follower.name != None %}
+                                        <h6>{{ follower.name }}</h6>
+                    
+                                    {% else %}
+                                        <h6>{{ follower.username }}</h6>
+                                    {% endif %}
+                    
+                                    {% if follower.description != None %}
+                                        <small class="text-muted">
+                                            {{ follower.description }}
+                                        </small>
+                                    {% endif %}
+                                </div>
+                                <div class="flex-shrink-1 bd-highlight">
+                                    <div class="dropdown d-inline-flex">
+                                        <button class="btn btn-light mt-2 me-2" type="button" id="dropdownMenuButton3"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-h"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end shadow-sm text-center"
+                                            aria-labelledby="dropdownMenuButton3">
+                                            <li><a class="dropdown-item" href="#">...</a></li>
+                                            <li><a class="dropdown-item" href="#">...</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+        
+        {% if followers.has_next %}
+            <a class="infinite-more-link" href="{% url 'person:followers' person.username followers.next_page_number %}"></a>
+
+            <div class="d-flex justify-content-center" style="display:none;">
+                <div class="spinner-border text-dark" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+
+        {% else %}
+            <p class="text-muted" style="text-align: center;"><small>به آخر لیست رسیدید</small></p>
+        {% endif %}
+
+        <script src="{% static 'js/jquery.min.js' %}"></script>
+        <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+        <script src="{% static 'js/infinite.min.js' %}"></script>
+        <script>
+            var infinite = new Waypoint.Infinite({
+                element: $('.infinite-container')[0],
+                offset: 'bottom-in-view',
+
+                onBeforePageLoad: function () {
+                    $('.spinner-border').show();
+                },
+                onAfterPageLoad: function () {
+                    $('.spinner-border').hide();
+
+                    var fanum = document.querySelectorAll('span.fa-num');
+                    for (let i = 0; i < fanum.length; i++) {
+                        fanum[i].innerHTML = fanum[i].innerHTML.replace(/0/g, '۰').replace(/1/g, '۱').replace(/2/g, '۲').replace(/3/g, '۳').replace(/4/g, '۴').replace(/5/g, '۵').replace(/6/g, '۶').replace(/7/g, '۷').replace(/8/g, '۸').replace(/9/g, '۹');
+                    }
+                }
+            });
+        </script>
+    
+    {% else %}
+        <p class="text-muted" style="text-align: center;"><small>{{ person.name }} دنبال‌کننده‌ای ندارد!</small></p>
+    {% endif %}
+{% endblock %}

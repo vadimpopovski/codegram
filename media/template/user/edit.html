@@ -1,0 +1,325 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}
+    {{ super }} ویرایش نمایه
+{% endblock %}
+
+{% block sidebar %}
+    <div class="card bg-white text-dark text-center sticky-md-top top-md-undernavbar-pt-3 shadow-sm mb-3 mt-0">
+        <div class="card-body p-3">
+            {% if github_login %}
+                <button type="button" class="btn btn-light mb-2"><i class="fab fa-github fa-lg"></i> متصل به گیت‌هاب</button>
+
+            {% else %}
+                <a href="{% url 'social:begin' 'github' %}" target="_blank"><button type="button" class="btn btn-dark mb-2"><i class="fab fa-github fa-lg"></i> اتصال به گیت‌هاب</button></a>
+            {% endif %}
+
+            {% if gitlab_login %}
+                <button type="button" class="btn btn-light"><i class="fab fa-gitlab fa-lg"></i> متصل به گیت‌لب</button>
+
+            {% else %}
+                <a href="{% url 'social:begin' 'gitlab' %}" target="_blank"><button type="button" class="btn btn-dark"><i class="fab fa-gitlab fa-lg"></i> اتصال به گیت‌لب</button></a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <form method="POST" enctype="multipart/form-data">
+        <div class="card bg-white text-dark mb-3">
+            <div class="card-body">
+                <h2 class="text-center mb-3">ویرایش نمایه</h2>
+                {% csrf_token %}
+
+                <div class="text-muted"><ul><li>همه‌ی این موارد در نمایه‌ی شما نمایش داده می‌شوند!</li></ul></div>
+
+                <div class="text-danger">
+                    {{ form.non_field_errors }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="avatarInput" class="form-label">چهرک</label>
+                    <br/>
+
+                    {% if authenticated_user.avatar.url != None %}
+                        <img class="rounded-circle mb-2" src="{{ authenticated_user.avatar.url }}" alt="{{ person.name }}" style="width: 128px; height: 128px;">
+
+                    {% else %}
+                        <img class="rounded-circle mb-2" src="{% static 'img/default_avatar.png' %}" alt="{{ person.name }}" style="width: 128px; height: 128px;">
+                    {% endif %}
+                    
+                    {% if authenticated_user.avatar.path != None %}
+                        <div class="form-check d-inline-block ms-3">
+                            <input class="form-check-input" type="checkbox" value="" name="avatarInput-clear" id="avatarInput-clear">
+                            <label class="form-check-label" for="avatarInput-clear">
+                              پاک کردن
+                            </label>
+                        </div>
+                    {% endif %}
+
+                    <input type="file" class="form-control {% if form.avatarInput.errors %}is-invalid{% endif %}" id="avatarInput" name="avatarInput" value="{% if form.avatarInput.value != None %}{{ form.avatarInput.value }}{% endif %}" accept="image/*">
+                    {% if form.avatarInput.errors %}
+                        <div id="avatarInput" class="invalid-feedback">
+                            {{ form.avatarInput.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="nameInput" class="form-label">نام</label>
+                    <input type="‌‌text" class="form-control {% if form.nameInput.errors %}is-invalid{% endif %}" id="nameInput" name="nameInput" value="{% if form.nameInput.value != None %}{{ form.nameInput.value }}{% endif %}" maxlength="30">
+                    {% if form.nameInput.errors %}
+                        <div id="nameInput" class="invalid-feedback">
+                            {{ form.nameInput.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="descriptionInput" class="form-label">توضیحات</label>
+                    <textarea class="form-control {% if form.descriptionInput.errors %}is-invalid{% endif %}" id="descriptionInput" name="descriptionInput" rows="3" maxlength="154">{% if form.descriptionInput.value != None %}{{ form.descriptionInput.value }}{% endif %}</textarea>
+                    {% if form.descriptionInput.errors %}
+                        <div id="descriptionInput" class="invalid-feedback">
+                            {{ form.descriptionInput.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="skillsInput" class="form-label">مهارت‌ها</label>
+                    <input type="‌‌text" dir="ltr" class="form-control {% if form.skillsInput.errors %}is-invalid{% endif %}" id="skillsInput" name="skillsInput" value="{% if form.skillsInput.value != None %}{{ form.skillsInput.value }}{% endif %}" maxlength="100">
+                    <small class="text-muted">هر مورد را انگلیسی و چسبیده بنویسید و با فاصله « » از بقیه‌ی موارد جدا کنید. مثال: <code>python rubyonrails c++</code></small>
+                    {% if form.skillsInput.errors %}
+                        <div id="skillsInput" class="invalid-feedback">
+                            {{ form.skillsInput.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-success">ذخیره</button>
+            </div>
+        </div>
+
+        <div class="card bg-white text-dark mb-3">
+            <div class="card-body">
+                <h2 class="text-center mb-3">رزومه</h2>
+                {% csrf_token %}
+
+                <div class="text-danger">
+                    {{ form.non_field_errors }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="rezomeInput" class="form-label">رزومه</label>
+                    <textarea class="form-control {% if form.rezomeInput.errors %}is-invalid{% endif %}" id="rezomeInput" name="rezomeInput" rows="5" maxlength="1000">{% if form.rezomeInput.value != None %}{{ form.rezomeInput.value }}{% endif %}</textarea>
+                    <small class="text-muted">از <a href="{% url 'markdown' %}">مارک‌دان</a> پشتیبانی می‌کند</small>
+                    {% if form.rezomeInput.errors %}
+                        <div id="rezomeInput" class="invalid-feedback">
+                            {{ form.rezomeInput.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-success">ذخیره</button>
+            </div>
+        </div>
+
+        <div class="card bg-white text-dark mb-3">
+            <div class="card-body">
+                <h2 class="text-center mb-3">شبکه‌های اجتماعی شما</h2>
+
+                <div class="text-danger">
+                    {{ form.non_field_errors }}
+                </div>
+                  
+                <div class="mb-3">
+                    <label for="githubInput" class="form-label">شناسه‌ی گیت‌هاب</label>
+                    <div class="input-group">
+                        <input type="‌‌text" dir="ltr" class="form-control {% if form.githubInput.errors %}is-invalid{% endif %}" id="githubInput" name="githubInput" value="{% if form.githubInput.value != None %}{{ form.githubInput.value }}{% endif %}" maxlength="30" placeholder="username">
+                        <span dir="ltr" class="input-group-text">github.com/</span>
+                    </div>
+                    {% if form.githubInput.errors %}
+                        <div id="githubInput" class="invalid-feedback">
+                            {{ form.githubInput.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="gitlabInput" class="form-label">شناسه‌ی گیت‌لب</label>
+                    <div class="input-group">
+                        <input type="‌‌text" dir="ltr" class="form-control {% if form.gitlabInput.errors %}is-invalid{% endif %}" id="gitlabInput" name="gitlabInput" value="{% if form.gitlabInput.value != None %}{{ form.gitlabInput.value }}{% endif %}" maxlength="30" placeholder="username">
+                        <span dir="ltr" class="input-group-text">gitlab.com/</span>
+                    </div>
+                    {% if form.gitlabInput.errors %}
+                        <div id="gitlabInput" class="invalid-feedback">
+                            {{ form.gitlabInput.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="stackoverflowInput" class="form-label">شناسه‌ی استک‌اورفلو</label>
+                    <div class="input-group">
+                        <input type="‌‌text" dir="ltr" class="form-control {% if form.stackoverflowInput.errors %}is-invalid{% endif %}" id="stackoverflowInput" name="stackoverflowInput" value="{% if form.stackoverflowInput.value != None %}{{ form.stackoverflowInput.value }}{% endif %}" maxlength="30" placeholder="user_id">
+                        <span dir="ltr" class="input-group-text">stackoverflow.com/users/</span>
+                    </div>
+                    {% if form.stackoverflowInput.errors %}
+                        <div id="stackoverflowInput" class="invalid-feedback">
+                            {{ form.stackoverflowInput.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="linkedinInput" class="form-label">شناسه‌ی لینکدین</label>
+                    <div class="input-group">
+                        <input type="‌‌text" dir="ltr" class="form-control {% if form.linkedinInput.errors %}is-invalid{% endif %}" id="linkedinInput" name="linkedinInput" value="{% if form.linkedinInput.value != None %}{{ form.linkedinInput.value }}{% endif %}" maxlength="30" placeholder="username">
+                        <span dir="ltr" class="input-group-text">www.linkedin.com/in/</span>
+                    </div>
+                    {% if form.linkedinInput.errors %}
+                        <div id="linkedinInput" class="invalid-feedback">
+                            {{ form.linkedinInput.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="devInput" class="form-label">شناسه‌ی دِو</label>
+                    <div class="input-group">
+                        <input type="‌‌text" dir="ltr" class="form-control {% if form.devInput.errors %}is-invalid{% endif %}" id="devInput" name="devInput" value="{% if form.devInput.value != None %}{{ form.devInput.value }}{% endif %}" maxlength="30" placeholder="username">
+                        <span dir="ltr" class="input-group-text">dev.to/</span>
+                    </div>
+                    {% if form.devInput.errors %}
+                        <div id="devInput" class="invalid-feedback">
+                            {{ form.devInput.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="facebookInput" class="form-label">شناسه‌ی فیسبوک</label>
+                    <div class="input-group">
+                        <input type="‌‌text" dir="ltr" class="form-control {% if form.facebookInput.errors %}is-invalid{% endif %}" id="facebookInput" name="facebookInput" value="{% if form.facebookInput.value != None %}{{ form.facebookInput.value }}{% endif %}" maxlength="30" placeholder="username">
+                        <span dir="ltr" class="input-group-text">www.facebook.com/</span>
+                    </div>
+                    {% if form.facebookInput.errors %}
+                        <div id="facebookInput" class="invalid-feedback">
+                            {{ form.facebookInput.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="instagramInput" class="form-label">شناسه‌ی اینستاگرام</label>
+                    <div class="input-group">
+                        <input type="‌‌text" dir="ltr" class="form-control {% if form.instagramInput.errors %}is-invalid{% endif %}" id="instagramInput" name="instagramInput" value="{% if form.instagramInput.value != None %}{{ form.instagramInput.value }}{% endif %}" maxlength="30" placeholder="username">
+                        <span dir="ltr" class="input-group-text">www.instagram.com/</span>
+                    </div>
+                    {% if form.instagramInput.errors %}
+                        <div id="instagramInput" class="invalid-feedback">
+                            {{ form.instagramInput.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="twitterInput" class="form-label">شناسه‌ی توییتر</label>
+                    <div class="input-group">
+                        <input type="‌‌text" dir="ltr" class="form-control {% if form.twitterInput.errors %}is-invalid{% endif %}" id="twitterInput" name="twitterInput" value="{% if form.twitterInput.value != None %}{{ form.twitterInput.value }}{% endif %}" maxlength="30" placeholder="username">
+                        <span dir="ltr" class="input-group-text">twitter.com/</span>
+                    </div>
+                    {% if form.twitterInput.errors %}
+                        <div id="twitterInput" class="invalid-feedback">
+                            {{ form.twitterInput.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="virgoolInput" class="form-label">شناسه‌ی ویرگول</label>
+                    <div class="input-group">
+                        <input type="‌‌text" dir="ltr" class="form-control {% if form.virgoolInput.errors %}is-invalid{% endif %}" id="virgoolInput" name="virgoolInput" value="{% if form.virgoolInput.value != None %}{{ form.virgoolInput.value }}{% endif %}" maxlength="30" placeholder="username">
+                        <span dir="ltr" class="input-group-text">virgool.io/@</span>
+                    </div>
+                    {% if form.virgoolInput.errors %}
+                        <div id="virgoolInput" class="invalid-feedback">
+                            {{ form.virgoolInput.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="websiteInput" class="form-label">وبگاه</label>
+                    <input type="url" dir="ltr" class="form-control {% if form.websiteInput.errors %}is-invalid{% endif %}" id="websiteInput" name="websiteInput" value="{% if form.websiteInput.value != None %}{{ form.websiteInput.value }}{% endif %}" maxlength="30" placeholder="http://example.com">
+                    {% if form.websiteInput.errors %}
+                        <div id="websiteInput" class="invalid-feedback">
+                            {{ form.websiteInput.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-success">ذخیره</button>
+            </div>
+        </div>
+
+        <div class="card bg-white text-dark mb-3">
+            <div class="card-body">
+                <h2 class="text-center mb-3">راه‌های ارتباطی</h2>
+
+                <div class="text-danger">
+                    {{ form.non_field_errors }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="publicEmailInput" class="form-label">رایانامه</label>
+                    <input type="email" dir="ltr" class="form-control {% if form.publicEmailInput.errors %}is-invalid{% endif %}" id="publicEmailInput" name="publicEmailInput" value="{% if form.publicEmailInput.value != None %}{{ form.publicEmailInput.value }}{% endif %}" maxlength="30" placeholder="email@example.com">
+                    {% if form.publicEmailInput.errors %}
+                        <div id="publicEmailInput" class="invalid-feedback">
+                            {{ form.publicEmailInput.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="mobileInput" class="form-label">تلفن همراه</label>
+                    <input type="tel" dir="ltr" class="form-control {% if form.mobileInput.errors %}is-invalid{% endif %}" id="mobileInput" name="mobileInput" value="{% if form.mobileInput.value != None %}{{ form.mobileInput.value }}{% endif %}" maxlength="11" minlength="11" placeholder="09123456789">
+                    {% if form.mobileInput.errors %}
+                        <div id="mobileInput" class="invalid-feedback">
+                            {{ form.mobileInput.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="telegramInput" class="form-label">شناسه‌ی تلگرام</label>
+                    <div class="input-group">
+                        <input type="text" dir="ltr" class="form-control {% if form.telegramInput.errors %}is-invalid{% endif %}" id="telegramInput" name="telegramInput" value="{% if form.telegramInput.value != None %}{{ form.telegramInput.value }}{% endif %}" maxlength="30" placeholder="username">
+                        <span dir="ltr" class="input-group-text">@</span>
+                    </div>
+                    {% if form.telegramInput.errors %}
+                        <div id="telegramInput" class="invalid-feedback">
+                            {{ form.telegramInput.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="matrixInput" class="form-label">ماتریکس</label>
+                    <div class="input-group">
+                        <input type="text" dir="ltr" class="form-control {% if form.matrixInput.errors %}is-invalid{% endif %}" id="matrixInput" name="matrixInput" value="{% if form.matrixInput.value != None %}{{ form.matrixInput.value }}{% endif %}" maxlength="30" placeholder="username:example.com">
+                        <span dir="ltr" class="input-group-text">@</span>
+                    </div>
+                    {% if form.matrixInput.errors %}
+                        <div id="matrixInput" class="invalid-feedback">
+                            {{ form.matrixInput.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-success">ذخیره</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'main.html' %}
+{% load static %}
+{% load jformat %}
+
+{% block title %}
+    {{ super }} مطالب {{ person.name }}
+{% endblock %}
+
+{% block body %}
+    <ul class="infinite-container" style="list-style-type: none; padding-right: 0;">
+        {% for post in posts.object_list %}
+            <li class="infinite-item">
+                {% include 'partials/post_preview.html' %}
+            </li>
+        {% endfor %}
+    </ul>
+    
+    {% if posts.has_next %}
+        <a class="infinite-more-link" href="{% url 'person:posts' person.username posts.next_page_number %}"></a>
+
+        <div class="d-flex justify-content-center" style="display:none;">
+            <div class="spinner-border text-dark" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+        </div>
+
+    {% else %}
+        <p class="text-muted" style="text-align: center;"><small>به آخر لیست رسیدید</small></p>
+    {% endif %}
+
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static 'js/infinite.min.js' %}"></script>
+    <script>
+        var infinite = new Waypoint.Infinite({
+            element: $('.infinite-container')[0],
+            offset: 'bottom-in-view',
+
+            onBeforePageLoad: function () {
+                $('.spinner-border').show();
+            },
+            onAfterPageLoad: function () {
+                $('.spinner-border').hide();
+
+                var fanum = document.querySelectorAll('span.fa-num');
+                for (let i = 0; i < fanum.length; i++) {
+                    fanum[i].innerHTML = fanum[i].innerHTML.replace(/0/g, '۰').replace(/1/g, '۱').replace(/2/g, '۲').replace(/3/g, '۳').replace(/4/g, '۴').replace(/5/g, '۵').replace(/6/g, '۶').replace(/7/g, '۷').replace(/8/g, '۸').replace(/9/g, '۹');
+                }
+            }
+        });
+    </script>
+{% endblock %}

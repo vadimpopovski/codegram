@@ -1,0 +1,132 @@
+{% load static %}
+{% load jformat %}
+
+<div id="comment_{{ comment.id }}" class="card bg-white text-dark mb-3">
+    <div class="card-header bg-light">
+        <div class="d-flex bd-highlight">
+            <div class="pe-3 flex-shrink-1 bd-highlight">
+                {% if comment.author.avatar.url != None %}
+                <img class="rounded-circle" src="{{ comment.author.avatar.url }}" alt="{{ comment.author.name }}" style="width: 50px; height: 50px;">
+                
+                {% else %}
+                    <img class="rounded-circle" src="{% static 'img/default_avatar.png' %}" alt="{{ comment.author.name }}" style="width: 50px; height: 50px;">
+                {% endif %}
+            </div>
+            <div class="w-100 bd-highlight">
+                <a class="link-dark text-decoration-none" href="{% url 'person:profile' comment.author.username %}">
+                    {% if post.author.name != '' %}
+                        <h6>{{ comment.author.name }}</h6>
+
+                    {% else %}
+                        <h6>{{ comment.author.username }}</h6>
+                    {% endif %}
+                </a>
+
+                <small class="text-muted">
+                    <i class="far fa-calendar"></i> <span class="fa-num">{{ comment.submit_time | jformat:'%Y/%m/%d' }} </span>
+                    <i class="far fa-clock"></i> <span class="fa-num">{{ comment.submit_time | jformat:'%H:%M' }}</span>
+                </small>
+            </div>
+            <div class="flex-shrink-1 bd-highlight">
+                <div class="dropdown d-inline-flex">
+                    <button class="btn btn-light mt-2 me-2" type="button" id="dropdownMenuButton3"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm text-center"
+                        aria-labelledby="dropdownMenuButton3">
+                        {% if user.is_authenticated and authenticated_user == comment.author %}
+                            <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editCommentModal_{{ comment.id }}"><i class="fas fa-edit"></i> ویرایش</button></li>
+                        {% endif %}
+                        {% if user.is_authenticated and authenticated_user == comment.author %}
+                            <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteCommentModal_{{ comment.id }}"><i class="fas fa-trash"></i> حذف</button></li>
+                        {% endif %}
+                        {% if user.is_authenticated %}
+                            <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#replyCommentModal_{{ comment.id }}"><i class="fas fa-reply"></i> پاسخ</button></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+            <p class="card-text">{{ comment.text }}</p>
+        </a>
+    </div>
+</div>
+
+<!-- Edit Comment Modal -->
+<div class="modal fade" id="editCommentModal_{{ comment.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-white text-dark">
+                <h5 class="modal-title">ویرایش نظر</h5>
+            </div>
+            <form method="POST" action="{% url 'person:post:edit_comment' post.author.username post.slug comment.id %}">
+                <div class="modal-body bg-white text-dark">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="textInput" class="form-label visually-hidden">متن نظر</label>
+                        <textarea class="form-control" id="textInput" name="textInput" rows="3" maxlength="1000" required>{{ comment.text }}</textarea>
+                    </div>
+                </div>
+                <div class="modal-footer bg-white text-dark">
+                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">منصرف شدم</button>
+                    <button type="submit" class="btn btn-success">ثبت</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Comment Modal -->
+<div class="modal fade" id="deleteCommentModal_{{ comment.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-white text-dark">
+                <h5 class="modal-title">حذف نظر</h5>
+              </div>
+            <div class="modal-body bg-white text-dark">
+                <p>با این کار نظر شما (و تمام پاسخ‌های آن) حذف می‌شود و دیگر قابل بازیابی نیست.</p>
+            </div>
+            <div class="modal-footer bg-white text-dark">
+                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">منصرف شدم</button>
+                <a href="{% url 'person:post:delete_comment' post.author.username post.slug comment.id %}"><button class="btn btn-danger" type="button">تأیید و حذف نظر</button></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reply Comment Modal -->
+<div class="modal fade" id="replyCommentModal_{{ comment.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-white text-dark">
+                <h5 class="modal-title">پاسخ به نظر</h5>
+            </div>
+            <form method="POST" action="{% url 'person:post:reply_comment' post.author.username post.slug comment.id %}">
+                <div class="modal-body bg-white text-dark">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="textInput" class="form-label visually-hidden">متن پاسخ</label>
+                        <textarea class="form-control" id="textInput" name="textInput" rows="3" maxlength="1000"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer bg-white text-dark">
+                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">منصرف شدم</button>
+                    <button type="submit" class="btn btn-success">ارسال</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% if comment.replys != None %}
+    <div class="ps-2 border-start border-5 rounded">
+        {% for comment in comment.replys.all %}
+                {% include 'partials/comment.html' %}
+        {% endfor %}
+    </div>
+{% endif %}

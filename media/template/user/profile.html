@@ -1,0 +1,149 @@
+{% extends 'main.html' %}
+{% load static %}
+{% load jformat %}
+
+{% block title %}
+    {{ super }} {{ person.name }}
+{% endblock %}
+
+{% block description %}
+    {{ person.description }}
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'partials/mini_profile.html' %}
+{% endblock %}
+
+{% block body %}
+    <div class="card bg-white text-dark mb-3">
+        <div class="card-body">
+            {% if person.rezome != None %}
+                <p class="{% if person.work != None or person.skills_are_available %}border-bottom{% endif %} pb-3 mb-3">
+                    {{ rezome | safe }}
+                </p>
+            {% endif %}
+            
+            {% if person.work != None %}
+                <div class="text-center {% if skills_are_available %}border-bottom{% endif %} pb-3 mb-3">
+                    <h5><i class="fas fa-briefcase"></i> شغل:</h5>
+
+                    <button type="button" class="btn btn-dark mb-1 mt-1 me-2">{{ person.work }}</button>
+                    در
+                    <button type="button" class="btn btn-dark mb-1 mt-1 ms-2">...</button>
+                </div>
+            {% endif %}
+            
+            {% if skills_are_available %}
+                <div class="text-center">
+                    <h5><i class="fas fa-code"></i> مهارت‌ها:</h5>
+
+                    {% for skill in person.skills.all %}
+                        <button type="button" class="btn btn-dark mb-1 mt-1 me-2">{{ skill }}</button>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        <div class="card-footer bg-light text-center">
+            {% if person.public_email != None %}
+                <a href="mailto:{{ person.public_email }}"><button type="button" class="btn btn-light mb-1 mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="رایانامه"><i class="fas fa-envelope"></i></button></a>
+            {% endif %}
+
+            {% if person.mobile != None %}
+                <a href="tel:{{ person.mobile }}"><button type="button" class="btn btn-light mb-1 mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="تلفن همراه"><i class="fas fa-phone"></i></button></a>
+            {% endif %}
+
+            {% if person.telegram != None %}
+                <a href="//t.me/{{ person.telegram }}" target="_blank"><button type="button" class="btn btn-light mb-1 mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="تلگرام"><i class="fab fa-telegram-plane"></i></button></a>
+            {% endif %}
+
+            {% if person.matrix != None %}
+                <a href="//matrix.to/#/@{{ person.matrix }}" target="_blank"><button type="button" class="btn btn-light mb-1 mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="ماتریکس">[m]</button></a>
+            {% endif %}
+
+            |
+
+            {% if person.github != None %}
+                <a href="//github.com/{{ person.github }}" target="_blank"><button type="button" class="btn btn-light mb-1 mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="گیت‌هاب"><i class="fab fa-github fa-lg"></i></button></a>
+            {% endif %}
+
+            {% if person.gitlab != None %}
+                <a href="//gitlab.com/{{ person.gitlab }}" target="_blank"><button type="button" class="btn btn-light mb-1 mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="گیت‌لب"><i class="fab fa-gitlab fa-lg"></i></button></a>
+            {% endif %}
+
+            {% if person.stackoverflow != None %}
+                <a href="//stackoverflow.com/users/{{ person.stackoverflow }}" target="_blank"><button type="button" class="btn btn-light mb-1 mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="استک‌اورفلو"><i class="fab fa-stack-overflow fa-lg"></i></button></a>
+            {% endif %}
+
+            {% if person.linkedin != None %}
+                <a href="//www.linkedin.com/in/{{ person.linkedin }}" target="_blank"><button type="button" class="btn btn-light mb-1 mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="لینکدین"><i class="fab fa-linkedin fa-lg"></i></button></a>
+            {% endif %}
+            
+            {% if person.dev != None %}
+                <a href="//dev.to/{{ person.dev }}" target="_blank"><button type="button" class="btn btn-light mb-1 mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="دِو"><i class="fab fa-dev fa-lg"></i></button></a>
+            {% endif %}
+
+            {% if person.virgool != None %}
+                <a href="//virgool.io/@{{ person.virgool }}" target="_blank"><button type="button" class="btn btn-light mb-1 mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="ویرگول"><img class="virgool-svg" src="{% static 'img/vrgl.svg' %}" height="24px"></button></a>
+            {% endif %}
+
+            {% if person.facebook != None %}
+                <a href="//www.facebook.com/{{ person.facebook }}" target="_blank"><button type="button" class="btn btn-light mb-1 mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="فیسبوک"><i class="fab fa-facebook fa-lg"></i></button></a>
+            {% endif %}
+
+            {% if person.instagram != None %}
+                <a href="//www.instagram.com/{{ person.instagram }}" target="_blank"><button type="button" class="btn btn-light mb-1 mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="اینستاگرام"><i class="fab fa-instagram fa-lg"></i></button></a>
+            {% endif %}
+
+            {% if person.twitter != None %}
+                <a href="//twitter.com/{{ person.twitter }}" target="_blank"><button type="button" class="btn btn-light mb-1 mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="توییتر"><i class="fab fa-twitter fa-lg"></i></button></a>
+            {% endif %}
+
+            {% if person.website != None %}
+                <a href="{{ person.website }}" target="_blank"><button type="button" class="btn btn-light mb-1 mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="وبگاه"><i class="fas fa-globe fa-lg"></i></button></a>
+            {% endif %}
+        </div>
+    </div>
+
+    <ul class="infinite-container" style="list-style-type: none; padding-right: 0;">
+        {% for post in posts.object_list %}
+            <li class="infinite-item">
+                {% include 'partials/post_preview.html' %}
+            </li>
+        {% endfor %}
+    </ul>
+    
+    {% if posts.has_next %}
+        <a class="infinite-more-link" href="{% url 'person:posts' person.username posts.next_page_number %}"></a>
+
+        <div class="d-flex justify-content-center" style="display:none;">
+            <div class="spinner-border text-dark" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+        </div>
+
+    {% else %}
+        <p class="text-muted" style="text-align: center;"><small>به آخر لیست رسیدید</small></p>
+    {% endif %}
+
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static 'js/infinite.min.js' %}"></script>
+    <script>
+        var infinite = new Waypoint.Infinite({
+            element: $('.infinite-container')[0],
+            offset: 'bottom-in-view',
+
+            onBeforePageLoad: function () {
+                $('.spinner-border').show();
+            },
+            onAfterPageLoad: function () {
+                $('.spinner-border').hide();
+
+                var fanum = document.querySelectorAll('span.fa-num');
+                for (let i = 0; i < fanum.length; i++) {
+                    fanum[i].innerHTML = fanum[i].innerHTML.replace(/0/g, '۰').replace(/1/g, '۱').replace(/2/g, '۲').replace(/3/g, '۳').replace(/4/g, '۴').replace(/5/g, '۵').replace(/6/g, '۶').replace(/7/g, '۷').replace(/8/g, '۸').replace(/9/g, '۹');
+                }
+            }
+        });
+    </script>
+{% endblock %}

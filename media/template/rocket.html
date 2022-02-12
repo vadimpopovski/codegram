@@ -1,0 +1,42 @@
+{% extends 'main.html' %}
+
+{% block title %}
+    {{ super }} سامانه‌ی افزایش بازدید
+{% endblock %}
+
+{% block body %}
+    <div class="card bg-white text-dark mb-3">
+        <div class="card-body">
+            <h1 class="text-center mb-4"><i class="fas fa-rocket fa-5x"></i></h1>
+            <h2 class="text-center mb-3">سامانه‌ی افزایش بازدید</h2>
+
+            <p class="card-text">اگر می‌خواهید افراد زیادی مطلب شما را مطالعه کنند اما دنبال‌کننده و مخاطب کمی دارید به‌ترین راه استفاده از سامانه‌ی افزایش بازدید است. ما با روش‌های مختلف مطلب شما را به کاربران زیادی نشان می‌دهیم و باعث افزایش بازدید آن خواهیم شد.</p>
+
+            <br/>
+
+            <ul>
+                <li class="mb-3">
+                    <h3>بنر</h3>
+                    <p class="card-text">مطلب به صورت بنر در صفحه‌ی اول نمایش داده می‌شود.</p>
+                    <p class="card-text"><strong>قیمت: </strong>۵٬۰۰۰ تومان (یک هفته)</p>
+                </li>
+
+                <li class="mb-3">
+                    <h3>کارت</h3>
+                    <p class="card-text">مطلب به صورت کارت زیر مطالب دیگر نمایش داده می‌شود.</p>
+                    <p class="card-text"><strong>قیمت: </strong>۵٬۰۰۰ تومان (یک هفته)</p>
+                </li>
+
+                <li class="mb-3">
+                    <h3>مخلوط</h3>
+                    <p class="card-text">بنر + کارت</p>
+                    <p class="card-text"><strong>قیمت: </strong><del class="text-danger">۱۰٬۰۰۰</del> ۹٬۰۰۰ تومان (یک هفته)</p>
+                </li>
+            </ul>
+
+            <br/>
+
+            <p class="card-text">برای استفاده از سامانه‌ی افزایش بازدید با <a href="{% url 'support' %}">پشتیبانی</a> تماس بگیرید.</p>
+        </div>
+    </div>
+{% endblock %}

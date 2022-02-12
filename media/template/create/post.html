@@ -1,0 +1,78 @@
+{% extends 'main.html' %}
+
+{% block title %}
+    {{ super }} مطلب جدید
+{% endblock %}
+
+{% block sidebar %}
+    <div class="card bg-white text-dark text-center sticky-md-top top-md-undernavbar-pt-3 shadow-sm mb-3 mt-0">
+        <div class="card-body p-3">
+            <h1 class="card-title"><i class="fab fa-markdown fa-3x"></i></h1>
+            <p class="card-text">ویرایش‌گر مطلب از <a href="{% url 'markdown' %}">مارک‌دان</a> پشتیبانی می‌کند</p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div class="card bg-white text-dark mb-3">
+        <div class="card-body">
+            <h2 class="text-center mb-3">مطلب جدید</h2>
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="text-danger">
+                    {{ form.non_field_errors }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="titleInput" class="form-label">عنوان</label>
+                    <input type="‌‌text" class="form-control {% if form.titleInput.errors %}is-invalid{% endif %}" id="titleInput" name="titleInput" value="{% if form.titleInput.value != None %}{{ form.titleInput.value }}{% endif %}" maxlength="50">
+                    {% if form.titleInput.errors %}
+                        <div id="titleInput" class="invalid-feedback">
+                            {{ form.titleInput.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="bodyInput" class="form-label">متن</label>
+                    <textarea class="form-control {% if form.bodyInput.errors %}is-invalid{% endif %}" id="bodyInput" name="bodyInput" rows="8">{% if form.bodyInput.value != None %}{{ form.bodyInput.value }}{% endif %}</textarea>
+                    {% if form.bodyInput.errors %}
+                        <div id="bodyInput" class="invalid-feedback">
+                            {{ form.bodyInput.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="coverInput" class="form-label">جلد</label>
+                    <input class="form-control {% if form.coverInput.errors %}is-invalid{% endif %}" type="url" id="coverInput" name="coverInput" value="{% if form.coverInput.value != None %}{{ form.coverInput.value }}{% endif %}">
+                    {% if form.coverInput.errors %}
+                        <div id="coverInput" class="invalid-feedback">
+                            {{ form.coverInput.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="shortDescriptionInput" class="form-label">متن</label>
+                    <textarea class="form-control {% if form.shortDescriptionInput.errors %}is-invalid{% endif %}" id="shortDescriptionInput" name="shortDescriptionInput" rows="3" maxlength="156">{% if form.shortDescriptionInput.value != None %}{{ form.shortDescriptionInput.value }}{% endif %}</textarea>
+                    {% if form.shortDescriptionInput.errors %}
+                        <div id="shortDescriptionInput" class="invalid-feedback">
+                            {{ form.shortDescriptionInput.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
+                    <label class="form-check-label" for="flexCheckChecked">
+                        <a href="{% url 'terms' %}">قوانین و شرایط</a> را پذیرفته‌ام
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-success">انتشار</button>
+              </form>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}
+    {{ super }} ورود
+{% endblock %}
+
+{% block sidebar_row %}
+{% endblock %}
+
+{% block body %}
+    <div class="card bg-white text-dark mb-3">
+        <div class="card-body">
+            <h2 class="text-center mb-3">ورود</h2>
+            <form method="POST" class="mb-3">
+                {% csrf_token %}
+
+                <div class="text-danger">
+                    {{ form.non_field_errors }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="username" class="form-label">نام کاربری</label>
+                    <input type="‌‌text" class="form-control {% if form.username.errors %}is-invalid{% endif %}" id="username" name="username" maxlength="50">
+                    {% if form.username.errors %}
+                        <div id="username" class="invalid-feedback">
+                            {{ form.username.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">گذرواژه</label>
+                    <input type="password" class="form-control {% if form.password.errors %}is-invalid{% endif %}" id="password" name="password" maxlength="50">
+                    {% if form.password.errors %}
+                        <div id="password" class="invalid-feedback">
+                            {{ form.password.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                
+                <button type="submit" class="btn btn-success">ورود</button>
+            </form>
+
+        <p><a href="{% url 'password_reset' %}">رمزم را فراموش کردم</a></p>
+
+
+    <div class="mb-3">
+        <a href="{% url 'social:begin' 'github' %}"><button type="button" class="btn btn-dark mb-1 mt-1 me-2"><i class="fab fa-github fa-lg"></i> ورود با حساب گیت‌هاب</button></a>
+        <a href="{% url 'social:begin' 'gitlab' %}"><button type="button" class="btn btn-dark mb-1 mt-1 me-2"><i class="fab fa-gitlab fa-lg"></i> ورود با حساب گیت‌لب</button></a>
+    </div>
+
+    <p>عضو نیستید؟ <a href="{% url 'signup' %}">عضویت</a></p>
+        </div>
+    </div>
+{% endblock %}
